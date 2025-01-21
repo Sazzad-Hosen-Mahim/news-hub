@@ -1,5 +1,6 @@
 import { useState } from "react"
 import NewsList from "./components/body/NewsList"
+import Footer from "./components/footer/footer"
 
 function App() {
   
