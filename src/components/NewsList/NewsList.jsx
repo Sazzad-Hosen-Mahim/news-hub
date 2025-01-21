@@ -22,14 +22,19 @@ const NewsList = () => {
     
   return (
     <div>
-      <h1>News List</h1>
       <h2>{newsList?.customSeo?.title}</h2>
 
-      {newsList?.collection?.items.map((item)=>{
+      {newsList?.collection?.items.map((item, i)=>{
         return (
+<<<<<<< HEAD:src/components/body/NewsList.jsx
             <div>
                 {item?.name}
                 {item?.summary}
+=======
+            <div key={i}>
+                <h1>{item?.name}</h1>
+                <p>{item?.summary}</p>
+>>>>>>> 896de9579792194cdb970d15e499431e001ee6f5:src/components/NewsList/NewsList.jsx
             </div>
         )
       })}

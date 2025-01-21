@@ -1,14 +1,20 @@
-import { useState } from "react"
-import NewsList from "./components/body/NewsList"
+// import NewsList from "./components/NewsList/NewsList.jsx"
+
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import About from "./components/About/About"
+import Contact from "./components/Contact/Contact"
+import Home from "./components/Home/Home"
 
 function App() {
   
   return (
-    <>
-     <h1 className="text-blue-400">home</h1>
-     <h2>Updated by Munna</h2>
-     <NewsList />
-    </>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element=<Home/> />
+      <Route path="/about" element=<About/> />
+      <Route path="/contact" element=<Contact/> />
+     </Routes>
+    </BrowserRouter>
   )
 }
 
