@@ -4,15 +4,15 @@ const Navitem = () => {
   return (
     <div>
         <ul className='flex items-center gap-6'>
-            <li className='transition-all cursor-pointer  hover:text-pink-600'>Home</li>
-            <li className='transition-all cursor-pointer  hover:text-pink-600'>AI</li>
-            <li className='transition-all cursor-pointer  hover:text-pink-600'>Payments</li>
-            <li className='transition-all cursor-pointer  hover:text-pink-600'>Banking</li>
-            <li className='transition-all cursor-pointer  hover:text-pink-600'>Crypto</li>
-            <li className='transition-all cursor-pointer  hover:text-pink-600'>wealth</li>
-            <li className='transition-all cursor-pointer  hover:text-pink-600'>International</li>
-            <li className='transition-all cursor-pointer  hover:text-pink-600'>Gallery</li>
-            <li className='transition-all cursor-pointer  hover:text-pink-600'>More</li>
+            <li className='transition-all cursor-pointer hover:text-primary'>Home</li>
+            <li className='transition-all cursor-pointer hover:text-primary'>AI</li>
+            <li className='transition-all cursor-pointer hover:text-primary'>Payments</li>
+            <li className='transition-all cursor-pointer hover:text-primary'>Banking</li>
+            <li className='transition-all cursor-pointer hover:text-primary'>Crypto</li>
+            <li className='transition-all cursor-pointer hover:text-primary'>wealth</li>
+            <li className='transition-all cursor-pointer hover:text-primary'>International</li>
+            <li className='transition-all cursor-pointer hover:text-primary'>Gallery</li>
+            <li className='transition-all cursor-pointer hover:text-primary'>More</li>
         </ul>
     </div>
   )
