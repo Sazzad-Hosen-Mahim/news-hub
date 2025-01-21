@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import logo from "../assets/images/logo.png";
 import Navitem from "./UI/Navitem";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
-import MobileMenu from "./UI/MobileMenu";
 
 const Navabr = () => {
   const [menu, setMenu] = useState(false);
