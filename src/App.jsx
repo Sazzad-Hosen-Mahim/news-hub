@@ -1,9 +1,8 @@
-// import NewsList from "./components/NewsList/NewsList.jsx"
 
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import About from "./components/About/About"
-import Contact from "./components/Contact/Contact"
-import Home from "./components/Home/Home"
+import About from "./page/About"
+import Contact from "./page/Contact"
+import Home from "./page/Home"
 
 function App() {
   
