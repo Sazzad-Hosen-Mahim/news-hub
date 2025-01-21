@@ -29,6 +29,7 @@ const NewsList = () => {
         return (
             <div>
                 {item?.name}
+                {item?.summary}
             </div>
         )
       })}
