@@ -1,14 +1,11 @@
-import NewsCard from "../components/FeatureCard/NewsCard"
-import NewsList from "../components/NewsList/NewsList"
-
+import NewsList from "../components/NewsList/NewsList";
 
 const Home = () => {
   return (
-    <div>
+    <div className="p-5">
       <NewsList />
-      <NewsCard />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
