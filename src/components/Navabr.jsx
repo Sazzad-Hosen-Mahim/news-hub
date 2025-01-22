@@ -5,6 +5,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import debounce from "debounce";
 
 const Navabr = () => {
   const [menu, setMenu] = useState(false);
@@ -26,6 +27,8 @@ const Navabr = () => {
       console.log(err);
     }
   };
+
+  const debouncedSearchChange = debounce(handleSearchChange, 500);
 
   useEffect(() => {
     fetchNewses();
@@ -53,7 +56,7 @@ const Navabr = () => {
               type="text"
               placeholder="Search"
               onChange={(e) => {
-                handleSearchChange(e);
+                debouncedSearchChange(e);
               }}
             />
           </div>
