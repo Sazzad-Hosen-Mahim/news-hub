@@ -66,7 +66,13 @@ const NewsList = () => {
                     item?.summary ||
                     "No description available."
                   }
-                  image={`https://images.prothomalo.com/${item?.["hero-image-s3-key"]}`}
+                  image={
+                    item?.story?.["hero-image-s3-key"]
+                      ? `https://images.prothomalo.com/${item.story["hero-image-s3-key"]}`
+                      : item?.["hero-image-s3-key"]
+                      ? `https://images.prothomalo.com/${item["hero-image-s3-key"]}`
+                      : "https://via.placeholder.com/150"
+                  }
                 />
               </Link>
             </div>
