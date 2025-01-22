@@ -15,7 +15,6 @@ const SingleNews = () => {
       );
       setNews(data);
       setLoading(false);
-      //   console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -25,43 +24,67 @@ const SingleNews = () => {
     fetchNewsDetails();
   }, []);
 
-  //   console.log(id);
-  // console.log(news);
+  if (loading) {
+    return <div className="text-center mt-10">Loading...</div>;
+  }
+
+  // console.log(news?.story);
+
   return (
-    <div className="grid grid-cols-4">
-      <div className="col-span-3 w-[50vw] flex flex-col gap-5 justify-center px-20">
-        <h2 className="text-bold text-3xl">{news?.story?.headline}</h2>
-        <div className="flex gap-3 items-center">
+    <div className="flex flex-col lg:flex-row lg:gap-10 px-5 lg:px-20 py-10">
+      <div className="lg:w-2/3 flex flex-col gap-5 p-5">
+        <h2 className="font-bold text-xl sm:text-2xl lg:text-3xl">
+          {news?.story?.headline}
+        </h2>
+        <div className="flex gap-3 items-center text-sm sm:text-base">
           <p className="text-gray-500">
             {news?.story?.["author-name"]}
             <span className="text-black">:</span>
           </p>
-          <p className="">{news?.story?.metadata?.["author-location"]}</p>
+          <p>{news?.story?.metadata?.["author-location"]}</p>
         </div>
         <img
           src={`https://images.prothomalo.com/${news?.story?.["hero-image-s3-key"]}`}
           alt={news?.id}
-          className="rounded-md"
+          className="rounded-md object-cover w-full max-h-[60vh]"
         />
-        <p className="text-lg">{news?.story?.summary}</p>
-      </div>
-      <div className=" ">
-        {news?.story?.["linked-entities"].map((card) => {
-          return (
-            <div
-              key={card.id}
-              className="flex flex-col gap-3 mt-5 p-4 bg-slate-100 mx-5 rounded-lg"
-            >
-              <div className="flex flex-col gap-3">
-                <h1 className="text-black text-2xl">{card?.["meta-title"]}</h1>
-                <h2 className="text-gray-500">
-                  {new Date(card?.["created-at"]).toLocaleString()}
-                </h2>
-                <p className="font-light">{card?.["meta-description"]}</p>
+        <p className="text-sm sm:text-base lg:text-lg">
+          {news?.story?.cards?.map((card, i) => {
+            console.log(card);
+            return (
+              <div key={i}>
+                {card?.["story-elements"].map((element, i) => {
+                  // console.log(element?.text);
+                  return (
+                    <div
+                      key={i}
+                      dangerouslySetInnerHTML={{ __html: element?.text }}
+                      className="text-justify mt-5"
+                    />
+                  );
+                })}
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </p>
+      </div>
+      <div className="lg:w-1/3 flex flex-col gap-5 mt-10 lg:mt-0">
+        {news?.story?.["linked-entities"]?.map((card) => (
+          <div
+            key={card.id}
+            className="flex flex-col gap-3 p-4 bg-slate-100 rounded-lg shadow-md"
+          >
+            <h1 className="text-black text-lg sm:text-xl">
+              {card?.["meta-title"]}
+            </h1>
+            <h2 className="text-gray-500 text-sm">
+              {new Date(card?.["created-at"]).toLocaleString()}
+            </h2>
+            <p className="font-light text-sm sm:text-base">
+              {card?.["meta-description"]}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

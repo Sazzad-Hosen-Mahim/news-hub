@@ -1,14 +1,14 @@
 const NewsCard = ({ title, desc, image, author, time }) => {
   console.log(author);
   return (
-    <div className="flex flex-col h-[60vh] w-[20vw] rounded-lg shadow-2xl p-5 mb-20 overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-3xl">
+    <div className="flex flex-col h-[60vh] w-[90vw] sm:w-[70vw] md:w-[40vw] lg:w-[30vw] xl:w-[20vw] rounded-lg shadow-2xl p-5 mb-20 overflow-hidden transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-3xl">
       {/* Title Section */}
       <div className="mb-2 overflow-hidden h-[20%] mt-5">
-        <h1 className="text-xl">{title}</h1>
+        <h1 className="lg:text-xl text-base">{title}</h1>
       </div>
       <div className="flex justify-between mb-5">
-        <h1 className="text-sm text-gray-500">{author}</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="lg:text-sm text-xs text-gray-500">{author}</h1>
+        <p className="lg:text-sm text-xs text-gray-500">
           {new Date(time).toLocaleDateString("en-US", {
             weekday: "short", // Abbreviated weekday (e.g., "Tue")
           })}{" "}
