@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+const baseUrl = "https://images.prothomalo.com/";
+
 const SingleNews = () => {
   const { id } = useParams();
 
@@ -28,7 +30,23 @@ const SingleNews = () => {
     return <div className="text-center mt-10">Loading...</div>;
   }
 
-  // console.log(news?.story);
+  console.log(news);
+
+  const imageKey =
+    news?.story?.alternative?.home?.default?.["hero-image"]?.[
+      "hero-image-s3-key"
+    ];
+
+  // console.log(imageKey);
+
+  const getImageUrl = (item) => {
+    // console.log();
+    if (item?.story?.["hero-image-s3-key"]) {
+      return `https://images.prothomalo.com/${item.story?.["hero-image-s3-key"]}`;
+    } else if (item?.story?.alternative?.home?.default?.["hero-image"]) {
+      return `https://images.prothomalo.com/${item?.story?.alternative?.home?.default?.["hero-image"]?.["hero-image-s3-key"]}`;
+    }
+  };
 
   return (
     <div className="flex flex-col lg:flex-row lg:gap-10 px-5 lg:px-20 py-10">
@@ -44,23 +62,36 @@ const SingleNews = () => {
           <p>{news?.story?.metadata?.["author-location"]}</p>
         </div>
         <img
-          src={`https://images.prothomalo.com/${news?.story?.["hero-image-s3-key"]}`}
+          src={getImageUrl(news)}
           alt={news?.id}
           className="rounded-md object-cover w-full max-h-[60vh]"
         />
         <p className="text-sm sm:text-base lg:text-lg">
           {news?.story?.cards?.map((card, i) => {
-            console.log(card);
+            // console.log(card);
             return (
               <div key={i}>
                 {card?.["story-elements"].map((element, i) => {
-                  // console.log(element?.text);
+                  console.log("element shown by munna", element);
                   return (
-                    <div
-                      key={i}
-                      dangerouslySetInnerHTML={{ __html: element?.text }}
-                      className="text-justify mt-5"
-                    />
+                    <>
+                      <div key={i} className="mt-5">
+                        {element?.type === "text" && (
+                          <div
+                            dangerouslySetInnerHTML={{ __html: element?.text }}
+                            className="text-justify"
+                          />
+                        )}
+
+                        {element?.type === "image" && (
+                          <img
+                            src={`${baseUrl}/${element?.["image-s3-key"]}`}
+                            alt={element?.["title"] || "Image"}
+                            className="w-full rounded-md"
+                          />
+                        )}
+                      </div>
+                    </>
                   );
                 })}
               </div>
