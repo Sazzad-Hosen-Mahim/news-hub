@@ -15,6 +15,7 @@ function App() {
         <Route path="/about" element=<About /> />
         <Route path="/news/:id" element=<SingleNews /> />
         <Route path="/news/category/:name" element={<NewsList />} />
+        <Route path="/search/:query" element={<NewsList />} />
       </Routes>
       <Footer />
     </BrowserRouter>
