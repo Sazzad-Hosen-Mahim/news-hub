@@ -52,6 +52,20 @@ const NewsList = () => {
   }
 
   return (
+<<<<<<< HEAD
+<div>
+
+
+  {newsList?.items?.length > 0 && newsList?.items.map((item, i) => {
+    // console.log(item?.story?.hero-image-s3-key)
+    return (
+      <div key={i}>
+        <h1>{item?.item?.headline[0]}</h1>
+        {/* <img 
+          src={`https://images.prothomalo.com/${item?.story?.hero-image-s3-key}`} 
+          alt="Story image" 
+        /> */}
+=======
     <>
       <div className="grid md:grid-cols-3 grid-cols-1 gap-4 lg:px-64 lg:py-16">
         {newsList.length > 0 ? (
@@ -69,6 +83,7 @@ const NewsList = () => {
         ) : (
           <div>No news available for this category.</div>
         )}
+>>>>>>> 50c35f226f1a9efa27a477aa1c2773657c623fa2
       </div>
       <div className="flex justify-center items-center mt-8 mb-8">
         {Array.from({ length: totalPages }, (_, index) => (
