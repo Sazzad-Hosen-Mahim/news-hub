@@ -42,6 +42,10 @@ const NewsList = () => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    window.scrollTo({
+      top: 0, // Scroll to the top of the page
+      behavior: "smooth", // Smooth scrolling effect
+    });
   };
 
   if (loading) {
@@ -54,7 +58,7 @@ const NewsList = () => {
 
   return (
     <>
-      <div className="grid md:grid-cols-3 grid-cols-1 gap-4 lg:px-64 lg:py-16">
+      <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-4 px-5 py-5 lg:px-64 lg:py-16">
         {newsList.length > 0 ? (
           currentNews.map((item, i) => (
             <div key={i} className="">
@@ -73,6 +77,8 @@ const NewsList = () => {
                       ? `https://images.prothomalo.com/${item["hero-image-s3-key"]}`
                       : "https://via.placeholder.com/150"
                   }
+                  author={item?.story?.["author-name"]}
+                  time={item?.story?.["created-at"]}
                 />
               </Link>
             </div>
