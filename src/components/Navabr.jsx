@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "../assets/images/logo.png";
+import logo from "../../public/logo2.png";
 import Navitem from "./UI/Navitem";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoIosMenu } from "react-icons/io";
@@ -8,11 +8,11 @@ import { Link } from "react-router-dom";
 const Navabr = () => {
   const [menu, setMenu] = useState(false);
   return (
-    <div className="w-full  bg-gray-200 rounded-lg ">
+    <div className="w-full bg-gray-200 rounded-lg ">
       <div className="flex flex-wrap items-center justify-between py-3">
         <Link to="/">
           <div className="cursor-pointer ms-4">
-            <img className="w-auto h-14" src={logo} alt="logo" />
+            <img className="w-auto h-16" src={logo} alt="logo" />
           </div>
         </Link>
 
@@ -20,7 +20,7 @@ const Navabr = () => {
           <div className="hidden lg:block mx-auto">
             <Navitem />
           </div>
-          <div className="items-center hidden gap-2 p-2 me-3 rounded-full sm:flex ring-1 ring-gray-600 focus-within:ring-2 focus-within:ring-primary ">
+          <div className="items-center hidden gap-2 p-2 me-3 rounded-full sm:flex ring-1 ring-gray-600 focus-within:ring-2 focus-within:ring-blue-400 ">
             <IoSearchOutline />
             <input
               className="outline-none bg-gray-200"
