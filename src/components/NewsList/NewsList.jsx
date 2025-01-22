@@ -17,8 +17,8 @@ const NewsList = () => {
     try {
       setLoading(true);
       const url = query
-        ? `https://api.pewds.vercel.app/prothomalo/search/${query}?start_from=0&per_page=15`
-        : `https://api.pewds.vercel.app/prothomalo/collection/${name}?start_from=0&per_page=15`;
+        ? `https://api.pewds.vercel.app/prothomalo/search/${query}?start_from=15&per_page=30`
+        : `https://api.pewds.vercel.app/prothomalo/collection/${name}?start_from=15&per_page=30`;
       const { data } = await axios.get(url);
       console.log(data.items);
       setNewsList(data?.items || []);
@@ -48,6 +48,31 @@ const NewsList = () => {
     });
   };
 
+  const getImageUrl = (item) => {
+    // Check for the direct "hero-image-s3-key" first
+    if (item?.story?.["hero-image-s3-key"]) {
+      return `https://images.prothomalo.com/${item?.story["hero-image-s3-key"]}`;
+    }
+
+    if (item?.["hero-image-s3-key"]) {
+      return `https://images.prothomalo.com/${item?.["hero-image-s3-key"]}`;
+    }
+
+    // If not found, search in "story-elements" for an image
+    const storyElements =
+      item?.story?.alternative?.home?.default?.["hero-image"]?.[
+        "hero-image-s3-key"
+      ];
+    console.log(item);
+    if (storyElements) {
+      console.log(storyElements);
+      return `https://images.prothomalo.com/${storyElements}`;
+    }
+
+    // Fallback image if nothing is found
+    return "https://via.placeholder.com/150";
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -55,6 +80,8 @@ const NewsList = () => {
   if (error) {
     return <div>{error}</div>;
   }
+
+  // console.log(currentNews);
 
   return (
     <>
@@ -70,13 +97,7 @@ const NewsList = () => {
                     item?.summary ||
                     "No description available."
                   }
-                  image={
-                    item?.story?.["hero-image-s3-key"]
-                      ? `https://images.prothomalo.com/${item.story["hero-image-s3-key"]}`
-                      : item?.["hero-image-s3-key"]
-                      ? `https://images.prothomalo.com/${item["hero-image-s3-key"]}`
-                      : "https://via.placeholder.com/150"
-                  }
+                  image={getImageUrl(item)}
                   author={item?.story?.["author-name"]}
                   time={item?.story?.["created-at"]}
                 />

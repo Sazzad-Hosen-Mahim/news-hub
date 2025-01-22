@@ -37,7 +37,7 @@ const Navabr = () => {
   // console.log(searchVal);
   // console.log(data);
   return (
-    <div className="w-full bg-gray-200 rounded-lg ">
+    <div className="w-full bg-gray-200 rounded-lg shadow-lg sticky">
       <div className="flex flex-wrap items-center justify-between py-3">
         <Link to="/">
           <div className="cursor-pointer ms-4">
