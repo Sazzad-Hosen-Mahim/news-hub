@@ -1,8 +1,10 @@
+@import "@fontsource/poppins/400.css"; /* Regular font */
+@import "@fontsource/poppins/700.css"; /* Bold font */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-body{
-    font-family: "";
+body {
+  @apply font-poppins;
 }
