@@ -73,6 +73,8 @@ const NewsList = () => {
                       ? `https://images.prothomalo.com/${item["hero-image-s3-key"]}`
                       : "https://via.placeholder.com/150"
                   }
+                  author={item?.story?.["author-name"]}
+                  time={item?.story?.["created-at"]}
                 />
               </Link>
             </div>
