@@ -5,7 +5,7 @@ import NewsCard from "../FeatureCard/NewsCard";
 import { Link } from "react-router-dom";
 
 const NewsList = () => {
-  // const { category = "latest" } = useParams(); // Default to "latest" if category is undefined
+  const { query = "" } = useParams(); // Default to "latest" if category is undefined
   const { name = "latest" } = useParams();
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,10 +16,11 @@ const NewsList = () => {
   const fetchNewses = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        `https://api.pewds.vercel.app/prothomalo/collection/${name}?start_from=0&per_page=15`
-      );
-      console.log(data);
+      const url = query
+        ? `https://api.pewds.vercel.app/prothomalo/search/${query}?start_from=0&per_page=15`
+        : `https://api.pewds.vercel.app/prothomalo/collection/${name}?start_from=0&per_page=15`;
+      const { data } = await axios.get(url);
+      console.log(data.items);
       setNewsList(data?.items || []);
       setLoading(false);
     } catch (err) {
@@ -31,7 +32,7 @@ const NewsList = () => {
 
   useEffect(() => {
     fetchNewses();
-  }, [name]); // Re-fetch data whenever the category changes
+  }, [name, query]);
 
   const startIndex = (currentPage - 1) * itemPerPage;
   const endIndex = startIndex + itemPerPage;
@@ -52,20 +53,6 @@ const NewsList = () => {
   }
 
   return (
-<<<<<<< HEAD
-<div>
-
-
-  {newsList?.items?.length > 0 && newsList?.items.map((item, i) => {
-    // console.log(item?.story?.hero-image-s3-key)
-    return (
-      <div key={i}>
-        <h1>{item?.item?.headline[0]}</h1>
-        {/* <img 
-          src={`https://images.prothomalo.com/${item?.story?.hero-image-s3-key}`} 
-          alt="Story image" 
-        /> */}
-=======
     <>
       <div className="grid md:grid-cols-3 grid-cols-1 gap-4 lg:px-64 lg:py-16">
         {newsList.length > 0 ? (
@@ -73,9 +60,19 @@ const NewsList = () => {
             <div key={i} className="">
               <Link to={`/news/${item.id}`}>
                 <NewsCard
-                  title={item?.story?.headline}
-                  desc={item?.story?.summary}
-                  image={`https://images.prothomalo.com/${item?.story?.["hero-image-s3-key"]}`}
+                  title={item?.story?.headline || item?.headline || "Untitled"}
+                  desc={
+                    item?.story?.summary ||
+                    item?.summary ||
+                    "No description available."
+                  }
+                  image={
+                    item?.story?.["hero-image-s3-key"]
+                      ? `https://images.prothomalo.com/${item.story["hero-image-s3-key"]}`
+                      : item?.["hero-image-s3-key"]
+                      ? `https://images.prothomalo.com/${item["hero-image-s3-key"]}`
+                      : "https://via.placeholder.com/150"
+                  }
                 />
               </Link>
             </div>
@@ -83,7 +80,6 @@ const NewsList = () => {
         ) : (
           <div>No news available for this category.</div>
         )}
->>>>>>> 50c35f226f1a9efa27a477aa1c2773657c623fa2
       </div>
       <div className="flex justify-center items-center mt-8 mb-8">
         {Array.from({ length: totalPages }, (_, index) => (
