@@ -1,127 +1,177 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import NewsCard from "../FeatureCard/NewsCard";
 import { Link } from "react-router-dom";
 
 const NewsList = () => {
-  const { query = "" } = useParams(); // Default to "latest" if category is undefined
+  const { query = "" } = useParams();
   const { name = "latest" } = useParams();
+  const navigate = useNavigate();
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemPerPage = 6;
+  const [currentPage, setCurrentPage] = useState(
+    Number(localStorage.getItem("currentPage")) || 1 // Load saved page
+  );
+  const [totalPages, setTotalPages] = useState(1);
+  const [paginationWindow, setPaginationWindow] = useState([1, 10]);
+  const itemsPerPage = 9;
 
-  const fetchNewses = async () => {
+  // Fetch news dynamically based on current page
+  const fetchNewses = async (page) => {
     try {
       setLoading(true);
+      const startFrom = (page - 1) * itemsPerPage;
       const url = query
-        ? `https://api.pewds.vercel.app/prothomalo/search/${query}?start_from=15&per_page=30`
-        : `https://api.pewds.vercel.app/prothomalo/collection/${name}?start_from=15&per_page=30`;
+        ? `https://api.pewds.vercel.app/prothomalo/search/${query}?start_from=${startFrom}&per_page=${itemsPerPage}`
+        : `https://api.pewds.vercel.app/prothomalo/collection/${name}?start_from=${startFrom}&per_page=${itemsPerPage}`;
+
       const { data } = await axios.get(url);
-      console.log(data.items);
+
       setNewsList(data?.items || []);
+      const totalCount = data?.["total-count"] || 0;
+      setTotalPages(Math.ceil(totalCount / itemsPerPage));
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      console.log("Error fetching news:", err);
       setError("Failed to fetch news.");
       setLoading(false);
     }
   };
 
+  // Fetch news on component mount or when page/query/name changes
   useEffect(() => {
-    fetchNewses();
-  }, [name, query]);
+    fetchNewses(currentPage);
+  }, [name, query, currentPage]);
 
-  const startIndex = (currentPage - 1) * itemPerPage;
-  const endIndex = startIndex + itemPerPage;
-  const currentNews = newsList.slice(startIndex, endIndex);
-
-  const totalPages = Math.ceil(newsList.length / itemPerPage);
+  // Save the current page in localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem("currentPage", currentPage);
+  }, [currentPage]);
 
   const handlePageChange = (page) => {
-    setCurrentPage(page);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+
+      // Update pagination window
+      if (page > paginationWindow[1]) {
+        setPaginationWindow([page, page + 9]);
+      } else if (page < paginationWindow[0]) {
+        setPaginationWindow([page - 9, page]);
+      }
+    }
+
     window.scrollTo({
-      top: 0, // Scroll to the top of the page
-      behavior: "smooth", // Smooth scrolling effect
+      top: 0,
+      behavior: "smooth",
     });
   };
 
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      handlePageChange(currentPage + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1);
+    }
+  };
+
   const getImageUrl = (item) => {
-    // Check for the direct "hero-image-s3-key" first
     if (item?.story?.["hero-image-s3-key"]) {
       return `https://images.prothomalo.com/${item?.story["hero-image-s3-key"]}`;
     }
-
     if (item?.["hero-image-s3-key"]) {
       return `https://images.prothomalo.com/${item?.["hero-image-s3-key"]}`;
     }
-
-    // If not found, search in "story-elements" for an image
-    const storyElements =
-      item?.story?.alternative?.home?.default?.["hero-image"]?.[
-        "hero-image-s3-key"
-      ];
-    console.log(item);
-    if (storyElements) {
-      console.log(storyElements);
-      return `https://images.prothomalo.com/${storyElements}`;
-    }
-
-    // Fallback image if nothing is found
     return "https://via.placeholder.com/150";
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  // console.log(currentNews);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <>
-      <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-4 px-5 py-5 lg:px-64 lg:py-16">
-        {newsList.length > 0 ? (
-          currentNews.map((item, i) => (
-            <div key={i} className="">
-              <Link to={`/news/${item.id}`}>
-                <NewsCard
-                  title={item?.story?.headline || item?.headline || "Untitled"}
-                  desc={
-                    item?.story?.summary ||
-                    item?.summary ||
-                    "No description available."
+      <div className="grid lg:grid-cols-4 md:grid-cols-3">
+        <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-1 gap-0 px-5 py-5 lg:py-6 lg:col-span-3 md:col-span-2">
+          {newsList.length > 0 ? (
+            newsList.map((item, i) => (
+              <div key={i}>
+                {/* Save current page before navigating */}
+                <Link
+                  to={`/news/${item.id}`}
+                  onClick={() =>
+                    localStorage.setItem("currentPage", currentPage)
                   }
-                  image={getImageUrl(item)}
-                  author={item?.story?.["author-name"]}
-                  time={item?.story?.["created-at"]}
-                />
-              </Link>
-            </div>
-          ))
-        ) : (
-          <div>No news available for this category.</div>
-        )}
+                >
+                  <NewsCard
+                    title={
+                      item?.story?.headline || item?.headline || "Untitled"
+                    }
+                    desc={
+                      item?.story?.summary ||
+                      item?.summary ||
+                      "No description available."
+                    }
+                    image={getImageUrl(item)}
+                    author={item?.story?.["author-name"]}
+                    time={item?.story?.["created-at"]}
+                  />
+                </Link>
+              </div>
+            ))
+          ) : (
+            <div>No news available for this category.</div>
+          )}
+        </div>
+        <div className="bg-blue-200 md:col-span-1 sm:hidden md:block"></div>
       </div>
+
+      {/* pagination start  */}
+
       <div className="flex justify-center items-center mt-8 mb-8">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageChange(index + 1)}
-            className={`px-4 py-2 mx-1 rounded ${
-              currentPage === index + 1
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 hover:bg-blue-500 hover:text-white"
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
+        <button
+          onClick={handlePrevious}
+          disabled={currentPage === 1} // Disable the button when on the first page
+          className={`px-4 py-2 mx-1 rounded ${
+            currentPage === 1
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-gray-200 hover:bg-blue-500 hover:text-white"
+          }`}
+        >
+          Previous
+        </button>
+
+        {Array.from(
+          { length: Math.min(10, totalPages - paginationWindow[0] + 1) },
+          (_, index) => {
+            const page = paginationWindow[0] + index;
+            return (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`px-4 py-2 mx-1 rounded ${
+                  currentPage === page
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 hover:bg-blue-500 hover:text-white"
+                }`}
+              >
+                {page}
+              </button>
+            );
+          }
+        )}
+
+        <button
+          onClick={handleNext}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 mx-1 rounded bg-gray-200 hover:bg-blue-500 hover:text-white disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </>
   );

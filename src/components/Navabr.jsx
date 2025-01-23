@@ -37,7 +37,7 @@ const Navabr = () => {
   // console.log(searchVal);
   // console.log(data);
   return (
-    <div className="w-full bg-gray-200 rounded-lg shadow-lg sticky">
+    <div className="w-full bg-blue-100 rounded-lg shadow-md sticky">
       <div className="flex flex-wrap items-center justify-between py-3">
         <Link to="/">
           <div className="cursor-pointer ms-4">
@@ -52,7 +52,7 @@ const Navabr = () => {
           <div className="items-center hidden gap-2 p-2 me-3 rounded-full sm:flex ring-1 ring-gray-600 focus-within:ring-2 focus-within:ring-blue-400 ">
             <IoSearchOutline />
             <input
-              className="outline-none bg-gray-200"
+              className="outline-none bg-transparent"
               type="text"
               placeholder="Search"
               onChange={(e) => {
