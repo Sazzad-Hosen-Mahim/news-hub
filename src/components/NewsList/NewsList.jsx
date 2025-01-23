@@ -50,6 +50,7 @@ const NewsList = () => {
     localStorage.setItem("currentPage", currentPage);
   }, [currentPage]);
 
+  // Handle page change and scroll to the top of the page
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
