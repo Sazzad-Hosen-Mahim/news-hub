@@ -72,7 +72,7 @@ const SingleNews = () => {
             return (
               <div key={i}>
                 {card?.["story-elements"].map((element, i) => {
-                  console.log("element shown by munna", element);
+                  console.log("element in single page", element);
                   return (
                     <>
                       <div key={i} className="mt-5">
@@ -89,6 +89,17 @@ const SingleNews = () => {
                             alt={element?.["title"] || "Image"}
                             className="w-full rounded-md"
                           />
+                        )}
+                        {element?.type === "youtube-video" && (
+                          <iframe
+                            width="560"
+                            height="315"
+                            src={element?.["embed-url"]}
+                            title="YouTube video player"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            className="mx-auto"
+                            allowFullScreen
+                          ></iframe>
                         )}
                       </div>
                     </>
