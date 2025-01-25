@@ -1,217 +1,72 @@
-
-
-// import axios from "axios";
-// import { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import NewsCard from "../FeatureCard/NewsCard";
-// import { Link } from "react-router-dom";
-
-// const NewsList = () => {
-//   const { query = "" } = useParams(); // Default query is empty if not provided
-//   const { name = "latest" } = useParams(); // Default name is "latest" if not provided
-//   const [newsList, setNewsList] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const [totalCount, setTotalCount] = useState(0); // Total count of news items
-//   const [startPage, setStartPage] = useState(1); // Start of the current pagination range
-//   const itemPerPage = 15; // Items per page
-//   const maxVisiblePages = 10; // Maximum number of visible pages
-
-//   // Fetch news items and total count from the API
-//   const fetchNewses = async () => {
-//     try {
-//       setLoading(true);
-//       const startFrom = (currentPage - 1) * itemPerPage; // Calculate start index for pagination
-
-//       // Construct the API URL dynamically based on query or name
-//       const url = query
-//         ? `https://api.pewds.vercel.app/prothomalo/search/${query}?start_from=${startFrom}&per_page=${itemPerPage}`
-//         : `https://api.pewds.vercel.app/prothomalo/collection/${name}?start_from=${startFrom}&per_page=${itemPerPage}`;
-
-//       const { data } = await axios.get(url);
-
-//       // Set the news items and total count
-//       setNewsList(data?.items || []);
-//       setTotalCount(data?.["total-count"] || 0); // Assuming API returns "total-count"
-//       setLoading(false);
-//     } catch (err) {
-//       console.error(err);
-//       setError("Failed to fetch news.");
-//       setLoading(false);
-//     }
-//   };
-
-//   // Fetch news items whenever currentPage, name, or query changes
-//   useEffect(() => {
-//     fetchNewses();
-//   }, [currentPage, name, query]);
-
-//   // Calculate the total number of pages based on total count
-//   const totalPages = Math.ceil(totalCount / itemPerPage);
-
-//   // Handle page change and scroll to the top of the page
-//   const handlePageChange = (page) => {
-//     setCurrentPage(page);
-//     window.scrollTo({
-//       top: 0,
-//       behavior: "smooth",
-//     });
-
-//     // Update the start page for pagination range
-//     if (page > startPage + maxVisiblePages - 1) {
-//       setStartPage(page - (maxVisiblePages - 1));
-//     } else if (page < startPage) {
-//       setStartPage(Math.max(page, 1));
-//     }
-//   };
-
-//   // Get image URL from the news item
-//   const getImageUrl = (item) => {
-//     if (item?.story?.["hero-image-s3-key"]) {
-//       return `https://images.prothomalo.com/${item?.story["hero-image-s3-key"]}`;
-//     }
-
-//     if (item?.["hero-image-s3-key"]) {
-//       return `https://images.prothomalo.com/${item?.["hero-image-s3-key"]}`;
-//     }
-
-//     const storyElements =
-//       item?.story?.alternative?.home?.default?.["hero-image"]?.["hero-image-s3-key"];
-//     if (storyElements) {
-//       return `https://images.prothomalo.com/${storyElements}`;
-//     }
-
-//     return "https://via.placeholder.com/150"; // Fallback image
-//   };
-
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
-
-//   if (error) {
-//     return <div>{error}</div>;
-//   }
-
-//   // Generate visible page numbers
-//   const visiblePages = Array.from(
-//     { length: Math.min(maxVisiblePages, totalPages - startPage + 1) },
-//     (_, index) => startPage + index
-//   );
-
-//   return (
-//     <>
-//       <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-4 px-5 py-5 lg:px-64 lg:py-16">
-//         {newsList.length > 0 ? (
-//           newsList.map((item, i) => (
-//             <div key={i} className="">
-//               <Link to={`/news/${item.id}`}>
-//                 <NewsCard
-//                   title={item?.story?.headline || item?.headline || "Untitled"}
-//                   desc={
-//                     item?.story?.summary ||
-//                     item?.summary ||
-//                     "No description available."
-//                   }
-//                   image={getImageUrl(item)}
-//                   author={item?.story?.["author-name"]}
-//                   time={item?.story?.["created-at"]}
-//                 />
-//               </Link>
-//             </div>
-//           ))
-//         ) : (
-//           <div>No news available for this category.</div>
-//         )}
-//       </div>
-//       <div className="flex justify-center items-center mt-8 mb-8">
-//         <button
-//           onClick={() => handlePageChange(Math.max(currentPage - 10, 1))}
-//           disabled={currentPage <= 10}
-//           className="px-4 py-2 mx-1 rounded bg-gray-200 hover:bg-blue-500 hover:text-white"
-//         >
-//           Prev
-//         </button>
-//         {visiblePages.map((page) => (
-//           <button
-//             key={page}
-//             onClick={() => handlePageChange(page)}
-//             className={`px-4 py-2 mx-1 rounded ${
-//               currentPage === page
-//                 ? "bg-blue-600 text-white"
-//                 : "bg-gray-200 hover:bg-blue-500 hover:text-white"
-//             }`}
-//           >
-//             {page}
-//           </button>
-//         ))}
-//         <button
-//           onClick={() => handlePageChange(Math.min(currentPage + 10, totalPages))}
-//           disabled={currentPage + 10 > totalPages}
-//           className="px-4 py-2 mx-1 rounded bg-gray-200 hover:bg-blue-500 hover:text-white"
-//         >
-//           Next
-//         </button>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default NewsList;
-
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import NewsCard from "../FeatureCard/NewsCard";
 import { Link } from "react-router-dom";
+import TrendingNews from "../Sidebar/TrendingNews";
+import WeatherUpdates from "../Sidebar/Weather";
+import StockMarket from "../Sidebar/Stock";
+import PollWidget from "../Sidebar/Poll";
 
 const NewsList = () => {
-  const { query = "" } = useParams(); // Default query is empty if not provided
-  const { name = "latest" } = useParams(); // Default name is "latest" if not provided
+  const { query = "" } = useParams();
+  const { name = "latest" } = useParams();
+  const navigate = useNavigate();
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0); // Total count of news items
-  const [startPage, setStartPage] = useState(1); // Start of the current pagination range
-  const itemPerPage = 15; // Items per page
-  const maxVisiblePages = 10; // Maximum number of visible pages
+  const [currentPage, setCurrentPage] = useState(
+    Number(localStorage.getItem("currentPage")) || 1 // Load saved page
+  );
+  const [totalPages, setTotalPages] = useState(1);
+  const [paginationWindow, setPaginationWindow] = useState([1, 10]);
+  const itemsPerPage = 9;
 
-  // Fetch news items and total count from the API
-  const fetchNewses = async () => {
+  // Fetch news dynamically based on current page
+  const fetchNewses = async (page) => {
     try {
       setLoading(true);
-      const startFrom = (currentPage - 1) * itemPerPage; // Calculate start index for pagination
-
-      // Construct the API URL dynamically based on query or name
+      const startFrom = (page - 1) * itemsPerPage;
       const url = query
-        ? `https://api.pewds.vercel.app/prothomalo/search/${query}?start_from=${startFrom}&per_page=${itemPerPage}`
-        : `https://api.pewds.vercel.app/prothomalo/collection/${name}?start_from=${startFrom}&per_page=${itemPerPage}`;
+        ? `https://api.pewds.vercel.app/prothomalo/search/${query}?start_from=${startFrom}&per_page=${itemsPerPage}`
+        : `https://api.pewds.vercel.app/prothomalo/collection/${name}?start_from=${startFrom}&per_page=${itemsPerPage}`;
 
       const { data } = await axios.get(url);
 
-      // Set the news items and total count
       setNewsList(data?.items || []);
-      setTotalCount(data?.["total-count"] || 0); // Assuming API returns "total-count"
+      const totalCount = data?.["total-count"] || 0;
+      setTotalPages(Math.ceil(totalCount / itemsPerPage));
       setLoading(false);
     } catch (err) {
-      console.error(err);
+      console.log("Error fetching news:", err);
       setError("Failed to fetch news.");
       setLoading(false);
     }
   };
 
-  // Fetch news items whenever currentPage, name, or query changes
+  // Fetch news on component mount or when page/query/name changes
   useEffect(() => {
-    fetchNewses();
-  }, [currentPage, name, query]);
+    fetchNewses(currentPage);
+  }, [name, query, currentPage]);
 
-  // Calculate the total number of pages based on total count
-  const totalPages = Math.ceil(totalCount / itemPerPage);
+  // Save the current page in localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem("currentPage", currentPage);
+  }, [currentPage]);
 
   // Handle page change and scroll to the top of the page
   const handlePageChange = (page) => {
-    setCurrentPage(page);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+
+      // Update pagination window
+      if (page > paginationWindow[1]) {
+        setPaginationWindow([page, page + 9]);
+      } else if (page < paginationWindow[0]) {
+        setPaginationWindow([page - 9, page]);
+      }
+    }
+
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -219,103 +74,155 @@ const NewsList = () => {
   };
 
   const handleNext = () => {
-    if (startPage + maxVisiblePages <= totalPages) {
-      setStartPage(startPage + 3);
-      setCurrentPage(currentPage);
+    if (currentPage < totalPages) {
+      handlePageChange(currentPage + 1);
     }
   };
 
-  const handlePrev = () => {
-    if (startPage > 3) {
-      setStartPage(startPage - 3);
-      setCurrentPage(startPage - 3);
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      handlePageChange(currentPage - 1);
     }
   };
 
-  // Get image URL from the news item
   const getImageUrl = (item) => {
     if (item?.story?.["hero-image-s3-key"]) {
       return `https://images.prothomalo.com/${item?.story["hero-image-s3-key"]}`;
-    }
-
-    if (item?.["hero-image-s3-key"]) {
+    } else if (item?.["hero-image-s3-key"]) {
       return `https://images.prothomalo.com/${item?.["hero-image-s3-key"]}`;
+    } else if (
+      item?.story?.alternative?.home?.default?.["hero-image"]?.[
+        "hero-image-s3-key"
+      ]
+    ) {
+      return `https://images.prothomalo.com/${item?.story?.alternative?.home?.default?.["hero-image"]?.["hero-image-s3-key"]}`;
     }
-
-    const storyElements =
-      item?.story?.alternative?.home?.default?.["hero-image"]?.["hero-image-s3-key"];
-    if (storyElements) {
-      return `https://images.prothomalo.com/${storyElements}`;
-    }
-
-    return "https://via.placeholder.com/150"; // Fallback image
+    return "https://via.placeholder.com/150";
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  // Generate visible page numbers
-  const visiblePages = Array.from(
-    { length: Math.min(maxVisiblePages, totalPages - startPage + 1) },
-    (_, index) => startPage + index
-  );
+  if (loading) return <div className="">Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <>
-      <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2 gap-4 px-5 py-5 lg:px-64 lg:py-16">
-        {newsList.length > 0 ? (
-          newsList.map((item, i) => (
-            <div key={i} className="">
-              <Link to={`/news/${item.id}`}>
-                <NewsCard
-                  title={item?.story?.headline || item?.headline || "Untitled"}
-                  desc={
-                    item?.story?.summary ||
-                    item?.summary ||
-                    "No description available."
+      <div className="grid lg:grid-cols-4 md:grid-cols-3">
+        <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-1 py-5 lg:py-6 lg:col-span-3 md:col-span-2 ps-5">
+          {newsList.length > 0 ? (
+            newsList.map((item, i) => (
+              <div key={i} className="">
+                {console.log(item)}
+                {/* Save current page before navigating */}
+                <Link
+                  to={`/news/${item.id}`}
+                  onClick={() =>
+                    localStorage.setItem("currentPage", currentPage)
                   }
-                  image={getImageUrl(item)}
-                  author={item?.story?.["author-name"]}
-                  time={item?.story?.["created-at"]}
-                />
-              </Link>
+                >
+                  <NewsCard
+                    title={
+                      item?.story?.headline || item?.headline || "Untitled"
+                    }
+                    desc={
+                      item?.story?.summary ||
+                      item?.summary ||
+                      "No description available."
+                    }
+                    image={getImageUrl(item)}
+                    author={item?.story?.["author-name"]}
+                    time={item?.story?.["created-at"]}
+                  />
+                </Link>
+              </div>
+            ))
+          ) : (
+            <div>No news available for this category.</div>
+          )}
+        </div>
+        <div className="bg-blue-100 md:col-span-1 sm:hidden md:block">
+          <div className="flex flex-col gap-5 px-5">
+            <div>
+              <TrendingNews
+                news={[
+                  {
+                    title: "Breaking: New Tech Revolution",
+                    thumbnail: "../../../public/breaking.jpg",
+                    link: "#",
+                  },
+                  {
+                    title: "World Cup Highlights",
+                    thumbnail: "../../../public/earth.jpg",
+                    link: "#",
+                  },
+                ]}
+              />
             </div>
-          ))
-        ) : (
-          <div>No news available for this category.</div>
-        )}
+            <div>
+              <WeatherUpdates
+                cities={[
+                  {
+                    name: "New York",
+                    temp: 24,
+                    condition: "Sunny",
+                    icon: "🌤️",
+                  },
+                  { name: "London", temp: 18, condition: "Rainy", icon: "🌧️" },
+                ]}
+              />
+            </div>
+            <div>
+              <StockMarket
+                stocks={[
+                  { name: "NASDAQ", change: 1.23 },
+                  { name: "DOW JONES", change: -0.76 },
+                ]}
+              />
+            </div>
+            <div>
+              <PollWidget />
+            </div>
+          </div>
+        </div>
       </div>
-      {/* pagination start */}
+
+      {/* pagination start  */}
+
       <div className="flex justify-center items-center mt-8 mb-8">
         <button
-          onClick={handlePrev}
-          disabled={startPage === 1}
-          className="px-4 py-2 mx-1 rounded bg-gray-200 hover:bg-blue-500 hover:text-white"
+          onClick={handlePrevious}
+          disabled={currentPage === 1} // Disable the button when on the first page
+          className={`px-4 py-2 mx-1 rounded ${
+            currentPage === 1
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-gray-200 hover:bg-blue-500 hover:text-white"
+          }`}
         >
-          Prev
+          Previous
         </button>
-        {visiblePages.map((page) => (
-          <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            className={`px-4 py-2 mx-1 rounded ${
-              currentPage === page
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 hover:bg-blue-500 hover:text-white"
-            }`}
-          >
-            {page}
-          </button>
-        ))}
+
+        {Array.from(
+          { length: Math.min(10, totalPages - paginationWindow[0] + 1) },
+          (_, index) => {
+            const page = paginationWindow[0] + index;
+            return (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`px-4 py-2 mx-1 rounded ${
+                  currentPage === page
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 hover:bg-blue-500 hover:text-white"
+                }`}
+              >
+                {page}
+              </button>
+            );
+          }
+        )}
+
         <button
           onClick={handleNext}
-          disabled={startPage + maxVisiblePages > totalPages}
-          className="px-4 py-2 mx-1 rounded bg-gray-200 hover:bg-blue-500 hover:text-white"
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 mx-1 rounded bg-gray-200 hover:bg-blue-500 hover:text-white disabled:opacity-50"
         >
           Next
         </button>
@@ -325,4 +232,3 @@ const NewsList = () => {
 };
 
 export default NewsList;
-
