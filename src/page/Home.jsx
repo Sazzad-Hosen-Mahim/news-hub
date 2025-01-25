@@ -2,7 +2,7 @@ import NewsList from "../components/NewsList/NewsList";
 
 const Home = () => {
   return (
-    <div className="p-5">
+    <div className="ps-12">
       <NewsList />
     </div>
   );
