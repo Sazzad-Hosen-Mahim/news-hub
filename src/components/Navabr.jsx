@@ -37,11 +37,14 @@ const Navabr = () => {
   // console.log(searchVal);
   // console.log(data);
   return (
-    <div className="w-full bg-blue-100 rounded-lg shadow-md sticky">
+    <div className="w-full bg-blue-100 sticky">
       <div className="flex flex-wrap items-center justify-between py-3">
         <Link to="/">
-          <div className="cursor-pointer ms-4">
+          <div className="cursor-pointer ms-4 flex items-center">
             <img className="w-auto h-16" src={logo} alt="logo" />
+            <h1 className="text-2xl font-bold uppercase text-sky-700">
+              News Hub
+            </h1>
           </div>
         </Link>
 

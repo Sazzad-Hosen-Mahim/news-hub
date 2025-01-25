@@ -3,6 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import NewsCard from "../FeatureCard/NewsCard";
 import { Link } from "react-router-dom";
+import TrendingNews from "../Sidebar/TrendingNews";
+import WeatherUpdates from "../Sidebar/Weather";
+import StockMarket from "../Sidebar/Stock";
+import PollWidget from "../Sidebar/Poll";
 
 const NewsList = () => {
   const { query = "" } = useParams();
@@ -84,23 +88,29 @@ const NewsList = () => {
   const getImageUrl = (item) => {
     if (item?.story?.["hero-image-s3-key"]) {
       return `https://images.prothomalo.com/${item?.story["hero-image-s3-key"]}`;
-    }
-    if (item?.["hero-image-s3-key"]) {
+    } else if (item?.["hero-image-s3-key"]) {
       return `https://images.prothomalo.com/${item?.["hero-image-s3-key"]}`;
+    } else if (
+      item?.story?.alternative?.home?.default?.["hero-image"]?.[
+        "hero-image-s3-key"
+      ]
+    ) {
+      return `https://images.prothomalo.com/${item?.story?.alternative?.home?.default?.["hero-image"]?.["hero-image-s3-key"]}`;
     }
     return "https://via.placeholder.com/150";
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="">Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <>
       <div className="grid lg:grid-cols-4 md:grid-cols-3">
-        <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-1 gap-0 px-5 py-5 lg:py-6 lg:col-span-3 md:col-span-2">
+        <div className="grid lg:grid-cols-3 grid-cols-1 md:grid-cols-1 py-5 lg:py-6 lg:col-span-3 md:col-span-2 ps-5">
           {newsList.length > 0 ? (
             newsList.map((item, i) => (
-              <div key={i}>
+              <div key={i} className="">
+                {console.log(item)}
                 {/* Save current page before navigating */}
                 <Link
                   to={`/news/${item.id}`}
@@ -128,7 +138,50 @@ const NewsList = () => {
             <div>No news available for this category.</div>
           )}
         </div>
-        <div className="bg-blue-200 md:col-span-1 sm:hidden md:block"></div>
+        <div className="bg-blue-100 md:col-span-1 sm:hidden md:block">
+          <div className="flex flex-col gap-5 px-5">
+            <div>
+              <TrendingNews
+                news={[
+                  {
+                    title: "Breaking: New Tech Revolution",
+                    thumbnail: "../../../public/breaking.jpg",
+                    link: "#",
+                  },
+                  {
+                    title: "World Cup Highlights",
+                    thumbnail: "../../../public/earth.jpg",
+                    link: "#",
+                  },
+                ]}
+              />
+            </div>
+            <div>
+              <WeatherUpdates
+                cities={[
+                  {
+                    name: "New York",
+                    temp: 24,
+                    condition: "Sunny",
+                    icon: "🌤️",
+                  },
+                  { name: "London", temp: 18, condition: "Rainy", icon: "🌧️" },
+                ]}
+              />
+            </div>
+            <div>
+              <StockMarket
+                stocks={[
+                  { name: "NASDAQ", change: 1.23 },
+                  { name: "DOW JONES", change: -0.76 },
+                ]}
+              />
+            </div>
+            <div>
+              <PollWidget />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* pagination start  */}
